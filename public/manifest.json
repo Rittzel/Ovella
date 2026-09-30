@@ -1,0 +1,17 @@
+{
+  "name": "Ovella — Menstrual Cycle Tracker",
+  "short_name": "Ovella",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff4f6",
+  "theme_color": "#b64d78",
+  "description": "A private, local menstrual cycle tracker.",
+  "icons": [
+    {
+      "src": "/icons/ovella-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
