@@ -1,14 +1,24 @@
 :root {
-  --bg: #f7f5fb;
-  --surface: #fff;
-  --text: #292330;
-  --muted: #81788b;
-  --line: #ebe5f0;
-  --accent: #b64d78;
-  --accent-soft: #fce7ee;
-  --pink: #e85b84;
-  --pink-soft: #fde8ef;
-  --shadow: 0 12px 40px #33204d0b;
+  /* Background color, used for the main background of the app. */
+  --bg: #15121a;
+  /* Background color, used for the main background of the app. */
+  --surface: #211c27;
+  /* Main text, like body text, headings, etc. */
+  --text: #f6f1fa;
+  /* Muted text, like secondary text, placeholder text, etc. */
+  --muted: #aaa0b5;
+  /* Lines, borders, dividers, etc. */
+  --line: #382f41;
+  /* Accent color, used for buttons, links, highlights, etc. */
+  --accent: #d77c9b;
+  /* Accent color, but softer, used for backgrounds, hover states, etc. */
+  --accent-soft: #3f2632;
+  /* Pink color, used for coloring of current period. */
+  --pink: #f47c9d;
+  /* Pink color, but softer, used for backgrounds, hover states, etc. */
+  --pink-soft: #3b2430;
+  /* Shadow color, used for box shadows, etc. */
+  --shadow: 0 12px 40px #0006;
   font-family:
     Inter,
     ui-sans-serif,
@@ -21,15 +31,25 @@
   background: var(--bg);
 }
 :root[data-theme="dark"] {
+  /* Background color, used for the main background of the app. */
   --bg: #15121a;
+  /* Background color, used for the main background of the app. */
   --surface: #211c27;
+  /* Main text, like body text, headings, etc. */
   --text: #f6f1fa;
+  /* Muted text, like secondary text, placeholder text, etc. */
   --muted: #aaa0b5;
+  /* Lines, borders, dividers, etc. */
   --line: #382f41;
+  /* Accent color, used for buttons, links, highlights, etc. */
   --accent: #d77c9b;
+  /* Accent color, but softer, used for backgrounds, hover states, etc. */
   --accent-soft: #3f2632;
+  /* Pink color, used for coloring of current period. */
   --pink: #f47c9d;
+  /* Pink color, but softer, used for backgrounds, hover states, etc. */
   --pink-soft: #3b2430;
+  /* Shadow color, used for box shadows, etc. */
   --shadow: 0 12px 40px #0006;
 }
 * {
