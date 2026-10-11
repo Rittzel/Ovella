@@ -1,6 +1,7 @@
 import "./style.css";
 
 const KEY = "cycle-polished-v2";
+const BASE_URL = import.meta.env.BASE_URL;
 const blank = {
     onboarded: false,
     periods: [],
@@ -105,7 +106,7 @@ function app() {
     document.querySelector("#app").innerHTML = `
   <div class="shell">
     <header class="appbar">
-      <div class="brand"><img class="brand-logo" src="/icons/ovella-mark.svg" alt="Ovella" /><div><b>Ovella</b><small>your private rhythm</small></div></div>
+      <div class="brand"><img class="brand-logo" src="${BASE_URL}icons/ovella-mark.svg" alt="Ovella" /><div><b>Ovella</b><small>your private rhythm</small></div></div>
       <button class="round" id="quickSettings" aria-label="Settings">⚙</button>
     </header>
     <main>
@@ -247,7 +248,7 @@ function settingsView() {
 }
 
 function onboarding() {
-    document.querySelector("#app").innerHTML = `<div class="onboarding"><div class="onboard-orb"><img src="/icons/ovella-mark.svg" alt="Ovella" /></div><span class="eyebrow">WELCOME TO OVELLA</span><h1>Understand your<br><em>unique rhythm.</em></h1><p>A calm, private way to track your period, symptoms, and cycle patterns.</p><div class="onboard-features"><span>🔒 Private by design</span><span>♡ Simple daily check-ins</span><span>◌ Beautiful cycle insights</span></div><button class="primary big-button" id="start">Get started</button><small>Your data stays on this device.</small></div>`;
+    document.querySelector("#app").innerHTML = `<div class="onboarding"><div class="onboard-orb"><img src="${BASE_URL}icons/ovella-mark.svg" alt="Ovella" /></div><span class="eyebrow">WELCOME TO OVELLA</span><h1>Understand your<br><em>unique rhythm.</em></h1><p>A calm, private way to track your period, symptoms, and cycle patterns.</p><div class="onboard-features"><span>🔒 Private by design</span><span>♡ Simple daily check-ins</span><span>◌ Beautiful cycle insights</span></div><button class="primary big-button" id="start">Get started</button><small>Your data stays on this device.</small></div>`;
     document.querySelector("#start").onclick = () => {
         state.onboarded = true;
         save();
