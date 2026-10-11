@@ -22,6 +22,34 @@ function save() {
     localStorage.setItem(KEY, JSON.stringify(state))
 }
 
+function isRecord(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value)
+}
+
+function isDateKey(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    let date = new Date(`${value}T12:00:00`);
+    return !Number.isNaN(date.getTime()) && iso(date) === value
+}
+
+function isValidExport(value) {
+    if (!isRecord(value) || typeof value.onboarded !== "boolean" ||
+        !Array.isArray(value.periods) || !value.periods.every(isDateKey) ||
+        !isRecord(value.entries) || !isRecord(value.settings)) return false;
+    let {cycleLength, periodLength, theme} = value.settings;
+    if (!Number.isInteger(cycleLength) || cycleLength < 15 || cycleLength > 90 ||
+        !Number.isInteger(periodLength) || periodLength < 1 || periodLength > 14 ||
+        !["system", "light", "dark"].includes(theme)) return false;
+    return Object.entries(value.entries).every(([date, entry]) =>
+        isDateKey(date) && isRecord(entry) &&
+        Array.isArray(entry.symptoms) && entry.symptoms.every(symptom => typeof symptom === "string") &&
+        (entry.flow === undefined || typeof entry.flow === "string") &&
+        (entry.mood === undefined || typeof entry.mood === "string") &&
+        (entry.notes === undefined || typeof entry.notes === "string") &&
+        (entry.periodEnd === undefined || isDateKey(entry.periodEnd))
+    )
+}
+
 function iso(v) {
     let d = new Date(v);
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
@@ -243,6 +271,8 @@ function settingsView() {
 <button class="setting" id="cycleSetting"><span>Typical cycle length</span><b>${state.settings.cycleLength} days <i>›</i></b></button>
 <button class="setting" id="periodSetting"><span>Typical period length</span><b>${state.settings.periodLength} days <i>›</i></b></button>
 <button class="setting" id="export"><span>Export your data</span><b>JSON <i>›</i></b></button>
+<button class="setting" id="import"><span>Import your data</span><b>JSON <i>›</i></b></button>
+<input id="importFile" type="file" accept=".json,application/json" hidden>
 <button class="setting danger" id="delete"><span>Delete all data (Warning: This will delete all data!)</span><b>Delete <i>›</i></b></button></div>
 <div class="about"><b>About Ovella</b><p>Ovella is designed to keep your personal tracking data on your device. Estimates are informational only and are not medical advice, diagnosis, or contraception.</p></div></section>`
 }
@@ -356,6 +386,48 @@ function bind() {
         a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], {type: "application/json"}));
         a.download = "cycle-data.json";
         a.click()
+    });
+    document.querySelector("#import")?.addEventListener("click", () => {
+        document.querySelector("#importFile").click()
+    });
+    document.querySelector("#importFile")?.addEventListener("change", async event => {
+        let input = event.currentTarget, file = input.files[0];
+        if (!file) return;
+        try {
+            let text;
+            try {
+                text = await file.text()
+            } catch (error) {
+                console.error("Could not read the selected Ovella data file.", error);
+                alert("Could not read this file. Choose a valid Ovella JSON export.");
+                return
+            }
+            let imported;
+            try {
+                imported = JSON.parse(text)
+            } catch (error) {
+                console.error("The selected Ovella data file is not valid JSON.", error);
+                alert("Could not read this file. Choose a valid Ovella JSON export.");
+                return
+            }
+            if (!isValidExport(imported)) {
+                alert("This file is not a valid Ovella data export.");
+                return
+            }
+            if (!confirm("Importing this file will replace all Ovella data on this device. Continue?")) return;
+            try {
+                localStorage.setItem(KEY, JSON.stringify(imported))
+            } catch (error) {
+                console.error("Could not save imported Ovella data.", error);
+                alert("Ovella could not save the imported data on this device.");
+                return
+            }
+            state = imported;
+            app();
+            alert("Your Ovella data has been imported.")
+        } finally {
+            input.value = ""
+        }
     });
     document.querySelector("#delete")?.addEventListener("click", () => {
         if (confirm("Delete all data from this device?")) {
